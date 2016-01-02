@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Mileage Logger</string>
+    <string name="action_menu">Menu</string>
+    <string name="totalMileage">0</string>
+    <string name="submitButton">Submit</string>
+    <string name="enterMileage">Enter mileage</string>
+</resources>

@@ -1,0 +1,25 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.gsandchase.mileagelogger.MainActivity">
+    <item
+
+        android:title="Menu"
+        android:id="@+id/action_menu"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        tools:ignore="AppCompatResource" />
+    <item
+        android:title="Weekly Mileage"
+        android:id="@+id/menu_weekly" />
+    <item
+        android:title="Monthly Mileage"
+        android:id="@+id/menu_monthly" />
+    <item
+        android:title="Annual Mileage"
+        android:id="@+id/menu_annual" />
+    <item
+        android:title="Clear All Mileage"
+        android:id="@+id/menu_clear" />
+
+</menu>

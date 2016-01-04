@@ -30,13 +30,10 @@ public class MainActivity extends AppCompatActivity {
     TextView totalMileage;
     Button addMileageButton;
     EditText newMileage;
-    Context context;
 
-    private float weeklyMileage = 0, monthlyMileage = 0, annualMileage = 0;
-    private String weeklyMileageS, monthlyMileageS, annualMileageS;
-    private String fileName = "mileageData";
-    private Date DATE = new Date();
-    private String DATE_S = DATE.toString();
+    MileageCounter mileageCounter;
+
+    // private String fileName = "mileageData";
 
 
     @Override
@@ -50,24 +47,18 @@ public class MainActivity extends AppCompatActivity {
         addMileageButton = (Button) findViewById(R.id.addMileageButton);
         newMileage = (EditText) findViewById(R.id.newMileage);
 
+        // TODO: Read in saved mileage data
+        mileageCounter = new MileageCounter();
 
-        readMileage();
 
-        if(newWeek(DATE)) {
-            weeklyMileage = 0;
-            weeklyMileageS = "0";
-        }
-
-        totalMileage.setText(weeklyMileageS);
+        updateCounterText();
 
 
         addMileageButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                writeMileage();
-                readMileage();
-                totalMileage.setText(weeklyMileageS);
-                newMileage.setText("");
-
+                Date now = new Date();
+                mileageCounter.addMileage(now, Double.parseDouble(newMileage.getText().toString()));
+                updateCounterText();
             }
         });
     }
@@ -82,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // TODO: Handle selection of different counters
 
         int id = item.getItemId();
 
@@ -96,161 +88,14 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    private void clearMileage()
-    {
-        FileOutputStream fos = null;
-        try {
-            fos = openFileOutput(fileName, MODE_PRIVATE);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            fos.write("".getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            fos.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        weeklyMileage = 0; monthlyMileage = 0; annualMileage = 0;
-
-        weeklyMileageS = String.format("%.2f", weeklyMileage);
-        monthlyMileageS = String.format("%.2f", monthlyMileage);
-        annualMileageS = String.format("%.2f", annualMileage);
-
-        totalMileage.setText(weeklyMileageS);
+    private void updateCounterText() {
+        Date now = new Date();
+        totalMileage.setText(String.format("%1$.2f", mileageCounter.getWeeklyMileage(now)));
     }
 
-    private void writeMileage()
-    {
-        String data = "";
-        String delimeter = " : ";
 
-        float mileage;
-
-        if(newMileage.getText().toString() == "")
-            mileage = 0;
-
-        else
-            mileage = Float.parseFloat(newMileage.getText().toString());
-
-
-        setMileages(mileage, weeklyMileage, monthlyMileage, annualMileage);
-
-        try {
-
-            FileOutputStream fos = openFileOutput(fileName, MODE_PRIVATE);
-
-            fos.write("".getBytes());
-            fos.flush();
-
-            data = weeklyMileageS + delimeter + DATE_S;
-
-            System.out.println("data: " + data);
-
-            fos.write(data.getBytes());
-
-            fos.close();
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void setMileages(float newMileage, float weeklyMileage, float monthlyMileage, float annualMileage){
-
-        weeklyMileage += newMileage;
-        monthlyMileage += newMileage;
-        annualMileage += newMileage;
-
-        weeklyMileageS = String.format("%.2f", weeklyMileage);
-        monthlyMileageS = String.format("%.2f", monthlyMileage);
-        annualMileageS = String.format("%.2f", annualMileage);
-
-    }
-
-    private void readMileage() {
-
-        FileInputStream fis = null;
-        String data = "";
-
-        if (!getFileStreamPath(fileName).exists()) {}
-
-        else {
-            try {
-                fis = openFileInput(fileName);
-                InputStreamReader sr = new InputStreamReader(fis);
-                BufferedReader br = new BufferedReader(sr);
-                StringBuffer sb = new StringBuffer();
-
-                while ((data = br.readLine()) != null) {
-                    sb.append(data);
-                }
-
-                if(data != null) {
-
-                    String[] tokens = data.split(" : ");
-
-
-                    weeklyMileageS = tokens[0];
-                    DATE_S = tokens[1];
-
-                    System.out.println(DATE); // Sat Jan 02 00:00:00 GMT 2010
-
-                    SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd kk:mm:ss zzz yyyy", Locale.ENGLISH);
-                    DATE = format.parse(DATE_S);
-                }
-
-
-                if (weeklyMileageS == null) {}
-                else {
-                    weeklyMileage = Float.parseFloat(weeklyMileageS);
-                    weeklyMileageS = String.format("%.2f", weeklyMileage);
-                    weeklyMileage = Float.parseFloat(weeklyMileageS);
-                }
-
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }
-    }
-
-    private boolean newWeek(Date date)
-    {
-        Calendar c = Calendar.getInstance();
-        c.setFirstDayOfWeek(Calendar.SUNDAY);
-        c.set(Calendar.HOUR, 0);
-        c.set(Calendar.MINUTE, 0);
-        c.set(Calendar.SECOND, 0);
-        c.set(Calendar.MILLISECOND, 0);
-
-        Date thisWeek = c.getTime();
-
-        Date nextWeek = new Date(thisWeek.getTime()+7*24*60*60*1000);
-
-        if(date.after(thisWeek) && date.before(nextWeek))
-            return false;
-
-        else
-            return true;
+    private void clearMileage() {
+        mileageCounter.clear();
+        updateCounterText();
     }
 }

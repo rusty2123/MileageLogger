@@ -1,16 +1,34 @@
 package com.gsandchase.mileagelogger;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONObject;
 
+import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 
 public class MileageCounter {
     private HashMap<LocalDate, Double> milesMap;
+    private String milesJSON_S;
 
     public MileageCounter() {
         milesMap = new HashMap<>();
+    }
+
+    public MileageCounter(String JSON){
+        if(JSON == "")
+            milesMap = new HashMap<>();
+        else{
+            Type collectionType = new TypeToken<HashMap<String, Double>>(){}.getType();
+            milesMap = new Gson().fromJson(JSON, collectionType);
+        }
     }
 
     public void addMileage(Date date, double miles) {
@@ -56,6 +74,10 @@ public class MileageCounter {
         return totalMiles;
     }
 
+    public void printMap(){
+        System.out.println("Map Contents: " + milesMap);
+    }
+
     // getWeeklyMileage gets the mileage of each day in the month that 'date' is a part of.
     public double getMonthlyMileage(Date date) {
         // TODO: Implement getMonthlyMileage.
@@ -66,5 +88,16 @@ public class MileageCounter {
     public double getAnnualMileage(Date date) {
         // TODO: Implement getAnnualMileage.
         return 0.0;
+    }
+
+    private void createJSON(){
+
+        Gson gson = new Gson();
+        milesJSON_S = gson.toJson(milesMap);
+    }
+
+    public String getMilesJSON_S(){
+        createJSON();
+        return milesJSON_S;
     }
 }

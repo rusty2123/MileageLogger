@@ -12,6 +12,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -27,14 +31,15 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
+    Date DATE;
+    double MILEAGE;
+
     TextView totalMileage;
     Button addMileageButton;
     EditText newMileage;
 
     MileageCounter mileageCounter;
-
-    // private String fileName = "mileageData";
-
+    MileageLog mileageLog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +53,15 @@ public class MainActivity extends AppCompatActivity {
         newMileage = (EditText) findViewById(R.id.newMileage);
 
         // TODO: Read in saved mileage data
-        mileageCounter = new MileageCounter();
+        mileageLog = new MileageLog(getApplicationContext());
 
+        //mileageLog.clearFile();
+
+        System.out.println("File contents: " + mileageLog.readFromFile());
+
+        mileageCounter = new MileageCounter(mileageLog.readFromFile());
+
+        mileageCounter.printMap();
 
         updateCounterText();
 
@@ -59,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
                 Date now = new Date();
                 mileageCounter.addMileage(now, Double.parseDouble(newMileage.getText().toString()));
                 updateCounterText();
+                newMileage.setText("");
+                mileageLog.writeJsonToFile(mileageCounter.getMilesJSON_S());
             }
         });
     }
@@ -91,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
     private void updateCounterText() {
         Date now = new Date();
         totalMileage.setText(String.format("%1$.2f", mileageCounter.getWeeklyMileage(now)));
+
+        System.out.println("Weekly Mileage: " + mileageCounter.getWeeklyMileage(now));
     }
 
 
@@ -98,4 +114,5 @@ public class MainActivity extends AppCompatActivity {
         mileageCounter.clear();
         updateCounterText();
     }
+
 }

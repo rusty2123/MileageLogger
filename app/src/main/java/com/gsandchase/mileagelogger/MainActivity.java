@@ -31,8 +31,10 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    Date DATE;
-    double MILEAGE;
+    /*String[] insults = {insult1, insult2, insult3,
+                        insult4, insult5, insult6,
+                        insult7, insult8, insult9,
+                        insult10, insult11, insult12};*/
 
     TextView totalMileage;
     Button addMileageButton;
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         totalMileage = (TextView) findViewById(R.id.totalMileage);
         addMileageButton = (Button) findViewById(R.id.addMileageButton);
         newMileage = (EditText) findViewById(R.id.newMileage);
+
 
         // TODO: Read in saved mileage data
         mileageLog = new MileageLog(getApplicationContext());

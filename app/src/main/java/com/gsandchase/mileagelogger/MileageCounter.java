@@ -1,18 +1,25 @@
 package com.gsandchase.mileagelogger;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 public class MileageCounter {
     private HashMap<LocalDate, Double> milesMap;
@@ -23,13 +30,34 @@ public class MileageCounter {
     }
 
     public MileageCounter(String JSON){
-        if(JSON == "")
-            milesMap = new HashMap<>();
-        else{
-            Type collectionType = new TypeToken<HashMap<String, Double>>(){}.getType();
-            milesMap = new Gson().fromJson(JSON, collectionType);
+        milesMap = new HashMap<>();
+        if(JSON == ""){}
+        else {
+            JSONObject jObject = null;
+            try {
+                jObject = new JSONObject(JSON);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Iterator<?> keys = jObject.keys();
+
+            while (keys.hasNext()) {
+                String key = (String) keys.next();
+                String value = null;
+                try {
+                    value = jObject.getString(key);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                LocalDate ld = LocalDate.parse(key);
+                Date date = ld.toDate();
+                Double miles = Double.parseDouble(value);
+                this.addMileage(date, miles);
+            }
         }
     }
+
+
 
     public void addMileage(Date date, double miles) {
         // Converting to joda.time.LocalDate keeps day info, but gets rid of time info.

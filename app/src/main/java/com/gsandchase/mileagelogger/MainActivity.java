@@ -1,50 +1,41 @@
 package com.gsandchase.mileagelogger;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.format.DateFormat;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
+import java.util.Random;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    /*String[] insults = {insult1, insult2, insult3,
-                        insult4, insult5, insult6,
-                        insult7, insult8, insult9,
-                        insult10, insult11, insult12};*/
+    Random random = new Random();
 
     TextView totalMileage;
     Button addMileageButton;
     EditText newMileage;
+    TextView insult;
 
     MileageCounter mileageCounter;
     MileageLog mileageLog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        final String[] insults = {
+                getApplicationContext().getString(R.string.insult1), getApplicationContext().getString(R.string.insult2),
+                getApplicationContext().getString(R.string.insult3), getApplicationContext().getString(R.string.insult4),
+                getApplicationContext().getString(R.string.insult5), getApplicationContext().getString(R.string.insult6),
+                getApplicationContext().getString(R.string.insult7), getApplicationContext().getString(R.string.insult8),
+                getApplicationContext().getString(R.string.insult9), getApplicationContext().getString(R.string.insult10),
+                getApplicationContext().getString(R.string.insult11), getApplicationContext().getString(R.string.insult12)};
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -53,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
         totalMileage = (TextView) findViewById(R.id.totalMileage);
         addMileageButton = (Button) findViewById(R.id.addMileageButton);
         newMileage = (EditText) findViewById(R.id.newMileage);
+        insult = (TextView) findViewById(R.id.insult);
+
+        insult.setVisibility(View.GONE);
 
 
         // TODO: Read in saved mileage data
@@ -75,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
                 mileageCounter.addMileage(now, Double.parseDouble(newMileage.getText().toString()));
                 updateCounterText();
                 newMileage.setText("");
+                insult.setText(insults[random.nextInt(12)]);
+                insult.setVisibility(View.VISIBLE);
                 mileageLog.writeJsonToFile(mileageCounter.getMilesJSON_S());
             }
         });
@@ -107,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateCounterText() {
         Date now = new Date();
-        totalMileage.setText(String.format("%1$.2f", mileageCounter.getWeeklyMileage(now)));
+        totalMileage.setText(String.format("%1$.1f", mileageCounter.getWeeklyMileage(now)));
 
         System.out.println("Weekly Mileage: " + mileageCounter.getWeeklyMileage(now));
     }

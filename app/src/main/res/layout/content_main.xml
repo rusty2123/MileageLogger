@@ -27,9 +27,8 @@
         android:layout_height="wrap_content"
         android:text="@string/submitButton"
         android:id="@+id/addMileageButton"
-        android:layout_below="@+id/totalMileage"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="141dp" />
+        android:layout_below="@+id/newMileage"
+        android:layout_centerHorizontal="true" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -40,6 +39,15 @@
         android:hint="@string/enterMileage"
         android:textAlignment="center"
         android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Medium Text"
+        android:id="@+id/insult"
+        android:layout_below="@+id/addMileageButton"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

@@ -5,15 +5,15 @@
     <string name="submitButton">Submit</string>
     <string name="enterMileage">Enter mileage</string>
 
-    <string name="insult1">I hope you're doubling today...</string>
+    <string name="insult1">I hope you\'re doubling today...</string>
     <string name="insult2">Were you army crawling or something?</string>
-    <string name="insult3">At least you're trying.</string>
+    <string name="insult3">At least you\'re trying.</string>
     <string name="insult4">You should probably try a different sport.</string>
     <string name="insult5">Run farther next time.</string>
     <string name="insult6">You get the participation award!</string>
     <string name="insult7">All you did was waste time today.</string>
     <string name="insult8">That better have been at a sub-6 pace.</string>
-    <string name="insult9">I bet you didn't qualify for nats.</string>
+    <string name="insult9">I bet you didn\'t qualify for nats.</string>
     <string name="insult10">My grandma is dead and runs more than that.</string>
     <string name="insult11">Maybe you can run for a D2 school?</string>
     <string name="insult12">You can tell your friends you ran more.</string>
